@@ -17,18 +17,23 @@ Future<http.Response> fetchData(src) {
 
 class _DataAsTableState extends State<DataAsTable> {
   List<TableRow> _tableData = [];
-  int count = 0;
+  bool isLoading = true;
 
   void refreshData() {
     setState(() {
+      isLoading = true;
+    });
       //192.168.68.52
-      fetchData('http://localhost:8080/api/fetch')
-      .then((res) => {
+    fetchData('http://localhost:8080/api/fetch')
+    .then((res) {
+      setState(() {
         if(res.body.isNotEmpty) {
-          _tableData = jsonToTableRows(jsonDecode(res.body))
+          _tableData = jsonToTableRows(jsonDecode(res.body));
         } else {
-          _tableData.add(const TableRow(children: [Text('is no worrking')]))
+          _tableData.add(const TableRow(children: [Text('is no worrking')]));
         }
+
+        isLoading = false;
       });
     });
   }
@@ -68,12 +73,17 @@ class _DataAsTableState extends State<DataAsTable> {
       rows.add(TableRow(children: tableRowChildren));
     });
 
+    refreshData();
     return rows;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return isLoading ? Column(
+      children: <Widget>[
+        Center(child: CircularProgressIndicator())
+      ]) :
+      Column(
           children: <Widget>[
             Table(
               border: TableBorder.all(),
