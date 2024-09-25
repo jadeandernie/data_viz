@@ -1,0 +1,8 @@
+services:
+  backend:
+    build: .
+    container_name: be
+    volumes:
+      - .:/build
+    ports:
+      - '8080:80'
