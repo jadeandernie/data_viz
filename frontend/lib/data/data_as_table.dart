@@ -1,7 +1,8 @@
-import 'dart:convert';
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class DataAsTable extends StatefulWidget {
   const DataAsTable({super.key});
@@ -15,8 +16,7 @@ Future<http.Response> fetchData(src) {
 }
 
 class _DataAsTableState extends State<DataAsTable> {
-  // Map<String, dynamic> _jsonData = {};
-  String _jsonData = '';
+  List<TableRow> _tableData = [];
   int count = 0;
 
   void refreshData() {
@@ -24,25 +24,61 @@ class _DataAsTableState extends State<DataAsTable> {
       //192.168.68.52
       fetchData('http://localhost:8080/api/fetch')
       .then((res) => {
-        // _jsonData = jsonDecode(res.body.toString())
-        _jsonData = res.body.toString()
-      })
-      .catchError((err) {
-        return <dynamic>{};
+        if(res.body.isNotEmpty) {
+          _tableData = jsonToTableRows(jsonDecode(res.body))
+        } else {
+          _tableData.add(const TableRow(children: [Text('is no worrking')]))
+        }
       });
     });
+  }
+
+  List<TableRow> jsonToTableRows(json) {
+    List<TableRow> rows = [];
+
+    var headingRowCells = <Widget>[];
+    json['headerRow'].forEach((colName) {
+      headingRowCells.add(Text(colName['data']));
+    });
+    rows.add(TableRow(children: headingRowCells));
+
+    json['rows'].forEach((jsonRow) {
+      var tableRowChildren = <Widget>[];
+      json['columns'].forEach((column) {
+        var cell = jsonRow[column];
+        var data = cell['data'];
+        switch(cell['type']) {
+          case 0: // PlainText
+          case 2: // number
+          case 3: // Boolean
+            tableRowChildren.add(Text(data));
+            break;
+          case 1: // Link
+            tableRowChildren.add(
+              InkWell(
+                child: Text(data),
+                onTap: () => launchUrl(data)
+              )
+            );
+            break;
+          default:
+            throw Error();
+        }
+    });
+      rows.add(TableRow(children: tableRowChildren));
+    });
+
+    return rows;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
           children: <Widget>[
-            const Text(
-              'Here is the data \\o/',
-            ),
-            Text(
-              _jsonData.toString(),
-              style: Theme.of(context).textTheme.headlineMedium,
+            Table(
+              border: TableBorder.all(),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: _tableData,
             ),
             FloatingActionButton(
               

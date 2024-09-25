@@ -3,6 +3,6 @@ services:
     platform: linux/arm64
     build: .
     volumes:
-      - .:/build
+      - ./src:/build
     ports:
       - '8080:80'
