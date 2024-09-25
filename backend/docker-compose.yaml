@@ -1,7 +1,7 @@
 services:
   backend:
+    platform: linux/arm64
     build: .
-    container_name: be
     volumes:
       - .:/build
     ports:
