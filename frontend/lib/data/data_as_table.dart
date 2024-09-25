@@ -22,13 +22,12 @@ class _DataAsTableState extends State<DataAsTable> {
   void refreshData() {
     setState(() {
       //192.168.68.52
-      fetchData('http://0.0.0.0:8080/api/fetch')
+      fetchData('http://localhost:8080/api/fetch')
       .then((res) => {
-        _jsonData = jsonDecode(res.body)
+        // _jsonData = jsonDecode(res.body.toString())
+        _jsonData = res.body.toString()
       })
       .catchError((err) {
-        _jsonData = 'Error retrieving data. $count, $err';
-        count=count+1;
         return <dynamic>{};
       });
     });
@@ -42,7 +41,7 @@ class _DataAsTableState extends State<DataAsTable> {
               'Here is the data \\o/',
             ),
             Text(
-              _jsonData,
+              _jsonData.toString(),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             FloatingActionButton(
