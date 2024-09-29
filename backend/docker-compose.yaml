@@ -6,3 +6,5 @@ services:
       - ./src:/build
     ports:
       - '8080:80'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development # Add or remove this line as needed to enable/disable hot reloading.

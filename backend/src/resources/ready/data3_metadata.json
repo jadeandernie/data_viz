@@ -1,0 +1,11 @@
+{
+  "columns": [
+  "alpha_two_code",
+  "country",
+  "domains",
+  "name",
+  "state-province",
+  "web_pages"
+],
+  "numDataRows": 10118
+}
