@@ -1,3 +1,6 @@
+
+Video demo: https://drive.google.com/file/d/1SMpxuIVk_wG4uElgGiVYbIJpLt0bvzMB/view?usp=sharing
+
 **Solution Explanation:**
 All data is stored in backend/src/resources. There are 2 versions of the data, the raw version is what is pulled directly from the source, and the ready version (split into a *_data.json and *_metadata.json) is the output of the backend/src/resources/data_processor.sh script. The idea is to format/preprocess the data ahead of time to save on request time and also to try to mitigate big-data and memory issues.
 
